@@ -1,5 +1,5 @@
 FROM scratch
 
-COPY foo foo
+COPY testrepo testrepo
 
 ENTRYPOINT ["foo"]

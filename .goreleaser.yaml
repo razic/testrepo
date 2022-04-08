@@ -1,3 +1,4 @@
+project_name: testrepo
 release:
   disable: true
 builds:
@@ -5,15 +6,24 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
-      - darwin
-checksum:
-  name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ incpatch .Version }}-next"
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - '^docs:'
-      - '^test:'
+    goarch:
+      - amd64
+      - arm64
 dockers:
+- image_templates:
+  - "razic/testrepo:{{ incpatch .Version }}-{{ .ShortCommit }}-amd64"
+  use: buildx
+  goarch: amd64
+  build_flag_templates:
+  - "--platform=linux/amd64"
+- image_templates:
+  - "razic/testrepo:{{ incpatch .Version }}-{{ .ShortCommit }}-arm64"
+  use: buildx
+  goarch: arm64
+  build_flag_templates:
+  - "--platform=linux/arm64"
+docker_manifests:
+- name_template: razic/testrepo:{{ .Version }}
+  image_templates:
+  - razic/testrepo:{{ .Version }}-amd64
+  - razic/testrepo:{{ .Version }}-arm64
